@@ -192,7 +192,7 @@ npm test
 npx ng test --watch=false --browsers=ChromeHeadless
 ```
 
-**25 tests** covering:
+Tests covering:
 - **AppComponent** — component creation
 - **AuthService** — login, register, logout, session check, observable emissions, `withCredentials`
 - **EventService** — all HTTP methods (correct URLs, verbs, query params, request bodies)
