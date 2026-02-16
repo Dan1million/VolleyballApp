@@ -1,0 +1,79 @@
+@use '@angular/material' as mat;
+
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+body {
+  background-color: #fafafa;
+}
+
+a {
+  text-decoration: none;
+}
+
+// Material icon import
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+// ── Dropdown / Select panel fixes ──
+
+// Give select options and autocomplete panels a solid white background
+.mat-mdc-select-panel,
+.mat-mdc-autocomplete-panel,
+.cdk-overlay-pane,
+.mat-datepicker-content {
+  background-color: #fff !important;
+}
+
+// Add left padding to option text so it isn't jammed against the edge
+// .mat-mdc-option .mdc-list-item__primary-text {
+//   padding-left: 4px;
+// }
+
+.mat-mdc-select-value-text {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+// Add right padding to dropdown arrows so they aren't squished to the edge
+.mat-mdc-select-arrow-wrapper {
+  padding-right: 12px;
+}
+
+// Add left padding to input fields for entered text
+.mat-mdc-input-element {
+  padding-left: 12px !important;
+}
+
+// Add left padding to placeholder text in input fields
+.mat-mdc-input-element::placeholder {
+  padding-left: 12px;
+}
+
+.mat-mdc-input-element::-webkit-input-placeholder {
+  padding-left: 12px;
+}
+
+.mat-mdc-input-element::-moz-placeholder {
+  padding-left: 12px;
+}
+
+.mat-mdc-input-element:-ms-input-placeholder {
+  padding-left: 12px;
+}
+
+// Ensure the datepicker popup has an opaque surface and a slight shadow
+.mat-datepicker-content {
+  background: #fff !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
+  border-radius: 8px !important;
+}
+
+// Menu panels (dropdowns from mat-menu) also get a solid background
+.mat-mdc-menu-panel {
+  background: #fff !important;
+}
