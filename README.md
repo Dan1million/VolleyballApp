@@ -153,3 +153,48 @@ The app runs at `http://localhost:4200`. The dev server proxies `/api` requests 
 - **courts** — id, location_id, name, court_type, is_indoor, surface_type
 - **events** — id, creator_id, court_id, title, description, event_date, max_players, skill_level
 - **event_signups** — id, event_id, user_id, created_at (unique constraint on event_id + user_id)
+
+## Testing
+
+The project has full unit and integration test suites for both backend and frontend.
+
+### Backend Tests (Jest + Supertest)
+
+```bash
+cd backend
+
+# Run all tests
+npm test
+
+# Run in watch mode (re-runs on file changes)
+npm run test:watch
+
+# Run with coverage report
+npm run test:coverage
+```
+
+Tests covering:
+- **Sanitize middleware** — HTML stripping, text/email/enum/int validation, edge cases
+- **Auth middleware** — session checks (present, missing, undefined)
+- **Auth routes** — register (validation, duplicate email, XSS), login (missing fields, wrong creds, success), logout, session check
+- **User routes** — GET/PUT profile, auth guards, input sanitization
+- **Event routes** — search (pagination, SQL injection prevention), my events, get by ID, create (validation, sanitization, clamping), delete (auth, 403, success), signup/cancel (past events, full events, duplicates)
+
+### Frontend Tests (Karma + Jasmine)
+
+```bash
+cd frontend
+
+# Run tests (opens Chrome)
+npm test
+
+# Run headless (for CI)
+npx ng test --watch=false --browsers=ChromeHeadless
+```
+
+**25 tests** covering:
+- **AppComponent** — component creation
+- **AuthService** — login, register, logout, session check, observable emissions, `withCredentials`
+- **EventService** — all HTTP methods (correct URLs, verbs, query params, request bodies)
+- **UserService** — getProfile, updateProfile
+- **authGuard** — allow when logged in, redirect to `/login` when not
