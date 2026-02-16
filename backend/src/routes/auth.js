@@ -1,13 +1,18 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const pool = require('../config/database');
+const { sanitizeText, sanitizeEmail } = require('../middleware/sanitize');
 
 const router = express.Router();
 
 // POST /api/auth/register
 router.post('/register', async (req, res) => {
   try {
-    const { email, password, firstName, lastName, dateOfBirth } = req.body;
+    const rawEmail = req.body.email;
+    const { password, dateOfBirth } = req.body;
+    const email = sanitizeEmail(rawEmail);
+    const firstName = sanitizeText(req.body.firstName, 100);
+    const lastName = sanitizeText(req.body.lastName, 100);
 
     if (!email || !password || !firstName || !lastName) {
       return res.status(400).json({ error: 'Email, password, first name, and last name are required.' });

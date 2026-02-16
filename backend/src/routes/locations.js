@@ -1,6 +1,7 @@
 const express = require('express');
 const pool = require('../config/database');
 const { requireAuth } = require('../middleware/auth');
+const { sanitizeText } = require('../middleware/sanitize');
 
 const router = express.Router();
 
@@ -44,7 +45,11 @@ router.get('/:id', async (req, res) => {
 // POST /api/locations - create a new location
 router.post('/', requireAuth, async (req, res) => {
   try {
-    const { name, address, city, state, zipCode, latitude, longitude } = req.body;
+    const name = sanitizeText(req.body.name, 255);
+    const address = sanitizeText(req.body.address, 500);
+    const city = sanitizeText(req.body.city, 100);
+    const state = sanitizeText(req.body.state, 50);
+    const { zipCode, latitude, longitude } = req.body;
 
     if (!name || !address) {
       return res.status(400).json({ error: 'Name and address are required.' });

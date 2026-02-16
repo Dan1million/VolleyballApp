@@ -25,6 +25,7 @@ export interface VolleyballEvent {
   signupCount?: number;
   signups?: EventSignup[];
   distance_miles?: number;
+  is_organizer?: number;
 }
 
 export interface EventSignup {

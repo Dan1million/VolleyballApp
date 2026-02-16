@@ -132,7 +132,7 @@ import { AuthService } from '../../services/auth.service';
       font-size: 40px;
       width: 40px;
       height: 40px;
-      color: #1976d2;
+      color: #FF8F00;
     }
 
     .full-width {

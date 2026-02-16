@@ -30,9 +30,9 @@ import { AuthService } from '../../services/auth.service';
       <span class="spacer"></span>
 
       @if (auth.currentUser$ | async; as user) {
-        <a mat-button routerLink="/events" routerLinkActive="active-link">
+        <a mat-button routerLink="/my-events" routerLinkActive="active-link">
           <mat-icon>event</mat-icon>
-          Events
+          My Events
         </a>
         <a mat-button routerLink="/events/create" routerLinkActive="active-link">
           <mat-icon>add_circle</mat-icon>
@@ -70,6 +70,8 @@ import { AuthService } from '../../services/auth.service';
       position: sticky;
       top: 0;
       z-index: 1000;
+      background: #00695C;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     }
 
     .brand {
@@ -82,6 +84,10 @@ import { AuthService } from '../../services/auth.service';
       font-weight: 600;
     }
 
+    .brand mat-icon {
+      color: #FFB300;
+    }
+
     .brand-text {
       font-family: 'Roboto', sans-serif;
     }
@@ -91,7 +97,8 @@ import { AuthService } from '../../services/auth.service';
     }
 
     .active-link {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
     }
 
     .main-content {

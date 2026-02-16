@@ -75,7 +75,7 @@ import { AsyncPipe } from '@angular/common';
       font-size: 80px;
       width: 80px;
       height: 80px;
-      color: #1976d2;
+      color: #FF8F00;
     }
 
     .hero h1 {
@@ -118,7 +118,7 @@ import { AsyncPipe } from '@angular/common';
       font-size: 48px;
       width: 48px;
       height: 48px;
-      color: #1976d2;
+      color: #00897B;
       margin-bottom: 12px;
     }
 

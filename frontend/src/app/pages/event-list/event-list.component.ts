@@ -231,11 +231,13 @@ import { VolleyballEvent, EventSearchParams } from '../../models/event.model';
 
     .event-card {
       cursor: pointer;
-      transition: box-shadow 0.2s, transform 0.2s;
+      transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+      border: 1px solid #CFD8DC;
     }
 
     .event-card:hover {
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 16px rgba(0, 137, 123, 0.15);
+      border-color: #4DB6AC;
       transform: translateY(-2px);
     }
 
@@ -246,15 +248,15 @@ import { VolleyballEvent, EventSearchParams } from '../../models/event.model';
     }
 
     .event-type-icon.beach {
-      color: #f9a825;
+      color: #FF8F00;
     }
 
     .event-type-icon.indoor {
-      color: #1976d2;
+      color: #00897B;
     }
 
     .event-type-icon.outdoor {
-      color: #388e3c;
+      color: #43A047;
     }
 
     .event-details {
@@ -276,7 +278,7 @@ import { VolleyballEvent, EventSearchParams } from '../../models/event.model';
       font-size: 18px;
       width: 18px;
       height: 18px;
-      color: #888;
+      color: #00897B;
     }
 
     .event-chips {

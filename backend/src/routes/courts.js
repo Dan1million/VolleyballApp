@@ -1,6 +1,7 @@
 const express = require('express');
 const pool = require('../config/database');
 const { requireAuth } = require('../middleware/auth');
+const { sanitizeText, validateEnum } = require('../middleware/sanitize');
 
 const router = express.Router();
 
@@ -34,7 +35,11 @@ router.get('/', async (req, res) => {
 // POST /api/courts - create a court at a location
 router.post('/', requireAuth, async (req, res) => {
   try {
-    const { locationId, name, courtType, isIndoor, surfaceType } = req.body;
+    const { locationId } = req.body;
+    const name = sanitizeText(req.body.name, 255);
+    const courtType = validateEnum(req.body.courtType, ['indoor', 'outdoor', 'beach'], 'outdoor');
+    const isIndoor = req.body.isIndoor;
+    const surfaceType = validateEnum(req.body.surfaceType, ['sand', 'grass', 'hardwood', 'concrete', 'other'], 'sand');
 
     if (!locationId || !name) {
       return res.status(400).json({ error: 'Location ID and name are required.' });

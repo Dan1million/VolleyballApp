@@ -1,6 +1,7 @@
 const express = require('express');
 const pool = require('../config/database');
 const { requireAuth } = require('../middleware/auth');
+const { sanitizeText, validateEnum, sanitizeInt } = require('../middleware/sanitize');
 
 const router = express.Router();
 
@@ -24,6 +25,10 @@ router.get('/', async (req, res) => {
     let distanceSelect = '';
     let distanceJoin = '';
     let distanceWhere = '';
+
+    // Whitelist sortBy to prevent SQL injection via ORDER BY
+    const allowedSortBy = ['date', 'created', 'distance'];
+    const safeSortBy = allowedSortBy.includes(sortBy) ? sortBy : 'created';
     let orderBy = 'e.created_at DESC';
 
     // Base query
@@ -91,12 +96,12 @@ router.get('/', async (req, res) => {
       params.push(lat, lng, lat, parseFloat(radiusMiles));
     }
 
-    // Sorting
-    if (sortBy === 'date') {
+    // Sorting — uses whitelisted safeSortBy
+    if (safeSortBy === 'date') {
       orderBy = 'e.event_date ASC';
-    } else if (sortBy === 'created') {
+    } else if (safeSortBy === 'created') {
       orderBy = 'e.created_at DESC';
-    } else if (sortBy === 'distance' && latitude && longitude) {
+    } else if (safeSortBy === 'distance' && latitude && longitude) {
       orderBy = 'distance_miles ASC';
     }
 
@@ -137,6 +142,40 @@ router.get('/', async (req, res) => {
     });
   } catch (error) {
     console.error('Get events error:', error);
+    res.status(500).json({ error: 'Internal server error.' });
+  }
+});
+
+// GET /api/events/my - get events the current user has signed up for or created
+router.get('/my', requireAuth, async (req, res) => {
+  try {
+    const userId = req.session.userId;
+
+    const [rows] = await pool.query(
+      `SELECT e.id, e.title, e.description, e.event_date, e.max_players,
+              e.skill_level, e.created_at,
+              e.creator_id,
+              u.first_name as creator_first_name, u.last_name as creator_last_name,
+              c.id as court_id, c.name as court_name, c.court_type, c.is_indoor, c.surface_type,
+              l.id as location_id, l.name as location_name, l.address as location_address,
+              l.city as location_city, l.state as location_state,
+              l.latitude, l.longitude,
+              (SELECT COUNT(*) FROM event_signups es2 WHERE es2.event_id = e.id) as signup_count,
+              CASE WHEN e.creator_id = ? THEN 1 ELSE 0 END as is_organizer
+       FROM events e
+       JOIN users u ON e.creator_id = u.id
+       JOIN courts c ON e.court_id = c.id
+       JOIN locations l ON c.location_id = l.id
+       LEFT JOIN event_signups es ON es.event_id = e.id AND es.user_id = ?
+       WHERE (e.creator_id = ? OR es.user_id = ?)
+       GROUP BY e.id
+       ORDER BY e.event_date ASC`,
+      [userId, userId, userId, userId]
+    );
+
+    res.json({ events: rows });
+  } catch (error) {
+    console.error('Get my events error:', error);
     res.status(500).json({ error: 'Internal server error.' });
   }
 });
@@ -190,7 +229,11 @@ router.get('/:id', async (req, res) => {
 // POST /api/events - create a new event
 router.post('/', requireAuth, async (req, res) => {
   try {
-    const { title, description, courtId, eventDate, maxPlayers, skillLevel } = req.body;
+    const { courtId, eventDate } = req.body;
+    const title = sanitizeText(req.body.title, 255);
+    const description = sanitizeText(req.body.description, 2000);
+    const maxPlayers = sanitizeInt(req.body.maxPlayers, 2, 100, 12);
+    const skillLevel = validateEnum(req.body.skillLevel, ['beginner', 'intermediate', 'advanced', 'all'], 'all');
 
     if (!title || !courtId || !eventDate) {
       return res.status(400).json({ error: 'Title, court, and event date are required.' });
@@ -215,10 +258,10 @@ router.post('/', requireAuth, async (req, res) => {
         req.session.userId,
         courtId,
         title,
-        description || null,
+        description,
         mysqlDate,
-        maxPlayers || 12,
-        skillLevel || 'all',
+        maxPlayers,
+        skillLevel,
       ]
     );
 
@@ -234,12 +277,45 @@ router.post('/', requireAuth, async (req, res) => {
       description,
       courtId,
       eventDate,
-      maxPlayers: maxPlayers || 12,
-      skillLevel: skillLevel || 'all',
+      maxPlayers,
+      skillLevel,
       creatorId: req.session.userId,
     });
   } catch (error) {
     console.error('Create event error:', error);
+    res.status(500).json({ error: 'Internal server error.' });
+  }
+});
+
+// DELETE /api/events/:id - cancel/delete an event (creator only)
+router.delete('/:id', requireAuth, async (req, res) => {
+  try {
+    const eventId = req.params.id;
+    const userId = req.session.userId;
+
+    // Check event exists and user is the creator
+    const [events] = await pool.query(
+      'SELECT id, creator_id FROM events WHERE id = ?',
+      [eventId]
+    );
+
+    if (events.length === 0) {
+      return res.status(404).json({ error: 'Event not found.' });
+    }
+
+    if (events[0].creator_id !== userId) {
+      return res.status(403).json({ error: 'Only the event organizer can cancel this event.' });
+    }
+
+    // Delete signups first (cascade should handle this, but be explicit)
+    await pool.query('DELETE FROM event_signups WHERE event_id = ?', [eventId]);
+
+    // Delete the event
+    await pool.query('DELETE FROM events WHERE id = ?', [eventId]);
+
+    res.json({ message: 'Event cancelled and deleted successfully.' });
+  } catch (error) {
+    console.error('Cancel event error:', error);
     res.status(500).json({ error: 'Internal server error.' });
   }
 });

@@ -1,23 +1,138 @@
 @use '@angular/material' as mat;
 
+// ── Color palette: Teal primary + Amber accent ──
+$primary: #00897B;
+$primary-light: #4DB6AC;
+$primary-dark: #00695C;
+$accent: #FF8F00;
+$accent-light: #FFB300;
+$warn: #E53935;
+$bg: #F5F7F6;
+$card-bg: #FFFFFF;
+$text: #263238;
+$text-secondary: #546E7A;
 
 html, body {
   height: 100%;
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+  color: $text;
 }
 
 body {
-  background-color: #fafafa;
+  background-color: $bg;
 }
 
 a {
   text-decoration: none;
+  color: $primary;
 }
 
 // Material icon import
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+// ── Global card styling ──
+.mat-mdc-card {
+  border: 1px solid #E0E0E0 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06) !important;
+}
+
+// ── Global button styling ──
+// Raised buttons → teal primary
+.mat-mdc-raised-button.mat-primary {
+  --mdc-protected-button-container-color: #{$primary} !important;
+  --mdc-protected-button-label-text-color: #fff !important;
+  border-radius: 8px !important;
+}
+
+.mat-mdc-raised-button.mat-accent {
+  --mdc-protected-button-container-color: #{$accent} !important;
+  --mdc-protected-button-label-text-color: #fff !important;
+  border-radius: 8px !important;
+}
+
+.mat-mdc-raised-button.mat-warn {
+  --mdc-protected-button-container-color: #{$warn} !important;
+  --mdc-protected-button-label-text-color: #fff !important;
+  border-radius: 8px !important;
+}
+
+// Flat/text buttons with primary
+.mat-mdc-button.mat-primary,
+.mat-mdc-icon-button.mat-primary {
+  --mdc-text-button-label-text-color: #{$primary} !important;
+  color: $primary !important;
+}
+
+// Stroked/outlined buttons get a visible border
+.mat-mdc-outlined-button,
+.mat-mdc-unelevated-button:not(.mat-primary):not(.mat-accent):not(.mat-warn),
+.mat-mdc-raised-button:not(.mat-primary):not(.mat-accent):not(.mat-warn) {
+  border: 1.5px solid #B0BEC5 !important;
+  border-radius: 8px !important;
+  color: $text !important;
+}
+
+// Stroked buttons (mat-stroked-button)
+button[mat-stroked-button], a[mat-stroked-button] {
+  border: 1.5px solid $primary !important;
+  color: $primary !important;
+  border-radius: 8px !important;
+}
+
+// ── Material toolbar / navbar ──
+.mat-toolbar.mat-primary {
+  background-color: $primary-dark !important;
+  color: #fff !important;
+}
+
+// ── FAB styling ──
+.mat-mdc-fab.mat-primary,
+.mat-mdc-mini-fab.mat-primary {
+  --mdc-fab-container-color: #{$primary} !important;
+  --mdc-fab-icon-color: #fff !important;
+}
+
+// ── Chips ──
+.mat-mdc-standard-chip {
+  border: 1px solid #CFD8DC !important;
+}
+
+.mat-mdc-standard-chip.mat-mdc-chip-highlighted {
+  --mdc-chip-elevated-container-color: #{$primary} !important;
+  --mdc-chip-label-text-color: #fff !important;
+  border-color: $primary !important;
+}
+
+// ── Form field outlines → teal focus ──
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
+  border-color: $primary !important;
+}
+.mat-mdc-form-field.mat-focused .mdc-floating-label {
+  color: $primary !important;
+}
+
+// ── Tabs ──
+.mat-mdc-tab:not(.mdc-tab--active) .mdc-tab__text-label {
+  color: $text-secondary !important;
+}
+.mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
+  color: $primary !important;
+}
+.mat-mdc-tab-header .mdc-tab-indicator__content--underline {
+  border-color: $primary !important;
+}
+
+// ── Paginator ──
+.mat-mdc-paginator {
+  border: 1px solid #E0E0E0;
+  border-radius: 8px;
+  margin-top: 16px;
+}
 
 // ── Dropdown / Select panel fixes ──
 
@@ -28,11 +143,6 @@ a {
 .mat-datepicker-content {
   background-color: #fff !important;
 }
-
-// Add left padding to option text so it isn't jammed against the edge
-// .mat-mdc-option .mdc-list-item__primary-text {
-//   padding-left: 4px;
-// }
 
 .mat-mdc-select-value-text {
   padding-left: 12px;
@@ -76,4 +186,11 @@ a {
 // Menu panels (dropdowns from mat-menu) also get a solid background
 .mat-mdc-menu-panel {
   background: #fff !important;
+  border: 1px solid #E0E0E0 !important;
+  border-radius: 8px !important;
+}
+
+// ── Snackbar ──
+.mat-mdc-snack-bar-container .mdc-snackbar__surface {
+  background-color: $primary-dark !important;
 }

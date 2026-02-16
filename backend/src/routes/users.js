@@ -1,6 +1,7 @@
 const express = require('express');
 const pool = require('../config/database');
 const { requireAuth } = require('../middleware/auth');
+const { sanitizeText } = require('../middleware/sanitize');
 
 const router = express.Router();
 
@@ -35,7 +36,9 @@ router.get('/me', requireAuth, async (req, res) => {
 // PUT /api/users/me - update current user account info
 router.put('/me', requireAuth, async (req, res) => {
   try {
-    const { firstName, lastName, dateOfBirth } = req.body;
+    const firstName = sanitizeText(req.body.firstName, 100);
+    const lastName = sanitizeText(req.body.lastName, 100);
+    const { dateOfBirth } = req.body;
 
     await pool.query(
       `UPDATE users SET first_name = COALESCE(?, first_name),

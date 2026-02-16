@@ -39,6 +39,10 @@ export class EventService {
     return this.http.get<VolleyballEvent>(`${this.apiUrl}/${id}`, { withCredentials: true });
   }
 
+  getMyEvents(): Observable<{ events: VolleyballEvent[] }> {
+    return this.http.get<{ events: VolleyballEvent[] }>(`${this.apiUrl}/my`, { withCredentials: true });
+  }
+
   createEvent(data: CreateEventRequest): Observable<VolleyballEvent> {
     return this.http.post<VolleyballEvent>(this.apiUrl, data, { withCredentials: true });
   }
@@ -51,6 +55,12 @@ export class EventService {
 
   cancelSignup(eventId: number): Observable<{ message: string }> {
     return this.http.delete<{ message: string }>(`${this.apiUrl}/${eventId}/signup`, {
+      withCredentials: true,
+    });
+  }
+
+  cancelEvent(eventId: number): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${this.apiUrl}/${eventId}`, {
       withCredentials: true,
     });
   }

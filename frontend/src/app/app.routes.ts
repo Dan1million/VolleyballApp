@@ -24,6 +24,12 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'my-events',
+    loadComponent: () =>
+      import('./pages/my-events/my-events.component').then((m) => m.MyEventsComponent),
+    canActivate: [authGuard],
+  },
+  {
     path: 'events',
     loadComponent: () =>
       import('./pages/event-list/event-list.component').then((m) => m.EventListComponent),
@@ -41,6 +47,7 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: '',
+    loadComponent: () =>
+      import('./pages/not-found/not-found.component').then((m) => m.NotFoundComponent),
   },
 ];

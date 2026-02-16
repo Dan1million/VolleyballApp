@@ -153,7 +153,7 @@ import { User } from '../../models/user.model';
       font-size: 48px;
       width: 48px;
       height: 48px;
-      color: #1976d2;
+      color: #00897B;
     }
 
     .info-grid {

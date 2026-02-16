@@ -125,7 +125,12 @@ import { VolleyballEvent } from '../../models/event.model';
             </mat-card-content>
 
             <mat-card-actions>
-              @if (isSignedUp) {
+              @if (isOrganizer) {
+                <button mat-raised-button color="warn" (click)="cancelEvent()" [disabled]="actionLoading">
+                  <mat-icon>delete</mat-icon>
+                  Cancel Event
+                </button>
+              } @else if (isSignedUp) {
                 <button mat-raised-button color="warn" (click)="cancelSignup()" [disabled]="actionLoading">
                   <mat-icon>remove_circle</mat-icon>
                   Cancel Signup
@@ -214,7 +219,7 @@ import { VolleyballEvent } from '../../models/event.model';
       font-size: 40px;
       width: 40px;
       height: 40px;
-      color: #f9a825;
+      color: #FF8F00;
     }
 
     .description {
@@ -243,7 +248,7 @@ import { VolleyballEvent } from '../../models/event.model';
     }
 
     .detail-item mat-icon {
-      color: #1976d2;
+      color: #00897B;
       margin-top: 2px;
     }
 
@@ -310,6 +315,11 @@ export class EventDetailComponent implements OnInit {
     }
   }
 
+  get isOrganizer(): boolean {
+    if (!this.event || !this.authService.currentUser) return false;
+    return this.event.creator_id === this.authService.currentUser.id;
+  }
+
   get isSignedUp(): boolean {
     if (!this.event?.signups || !this.authService.currentUser) return false;
     return this.event.signups.some((s) => s.user_id === this.authService.currentUser!.id);
@@ -350,6 +360,23 @@ export class EventDetailComponent implements OnInit {
       error: (err) => {
         this.actionLoading = false;
         this.snackBar.open(err.error?.error || 'Failed to sign up.', 'Close', { duration: 3000 });
+      },
+    });
+  }
+
+  cancelEvent() {
+    if (!this.event) return;
+    if (!confirm('Are you sure you want to cancel this event? This action cannot be undone.')) return;
+
+    this.actionLoading = true;
+    this.eventService.cancelEvent(this.event.id).subscribe({
+      next: () => {
+        this.snackBar.open('Event cancelled.', 'Close', { duration: 3000 });
+        this.router.navigate(['/events']);
+      },
+      error: (err) => {
+        this.actionLoading = false;
+        this.snackBar.open(err.error?.error || 'Failed to cancel event.', 'Close', { duration: 3000 });
       },
     });
   }
