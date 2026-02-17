@@ -17,7 +17,7 @@ export interface Court {
   name: string;
   court_type: 'indoor' | 'outdoor' | 'beach';
   is_indoor: boolean;
-  surface_type: 'sand' | 'grass' | 'hardwood' | 'concrete' | 'other';
+  surface_type: 'sand' | 'grass' | 'hardwood' | 'other';
   location_name?: string;
   location_address?: string;
 }

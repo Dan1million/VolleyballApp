@@ -37,7 +37,6 @@ async function initDatabase() {
     console.log('Seed data inserted successfully.');
 
     console.log('\nDatabase initialization complete!');
-    console.log('Demo account: demo@volleyball.app / password123');
   } catch (error) {
     console.error('Database initialization error:', error.message);
     process.exit(1);

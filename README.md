@@ -80,9 +80,7 @@ cd backend
 npm run db:init
 ```
 
-This creates the `volleyball_app` database, all tables, and inserts sample data including a demo account.
-
-**Demo Account:** `demo@volleyball.app` / `password123`
+This creates the `volleyball_app` database, all tables, and inserts sample data.
 
 ### 2. Backend
 
